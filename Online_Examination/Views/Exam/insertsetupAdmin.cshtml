@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "insertsetupAdmin";
+}
+
+<h1>insertsetupAdmin</h1>
+
+
+
+
+
+
+
+<table id="tbl" class="table table-bordered">
+    <tr>
+        <td>
+            <table class="table  table-bordered table-striped">
+
+
+
+
+                <tr>
+                    <th align="right">No. Of question</th>
+                    <td>
+                        <input id="number" type="text" class="form-control" placeholder="Answer" onkeypress="txtChkValidation('number')" />
+                    </td>
+                </tr>
+                <tr>
+                    <th align="right">Duration</th>
+                    <td>
+                        <input id="Duration" type="text" class="form-control" placeholder="Answer" onkeypress="txtChkValidation('Duration')" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th align="right">Rule</th>
+                    <td>
+                        <textarea id="Rule" type="text" class="form-control" placeholder="Rule for question" onkeypress=" txtChkValidation('Rule')"></textarea>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2" align="right">
+                        <input type="button" id="btn_insert" value="Save" />
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+
+
+
+<script type="text/javascript">
+
+
+
+
+    $(document).ready(function () {
+
+        $("#btn_insert").click(function () {
+            alert("click");
+            if (txtChkValidation('number') == true && txtChkValidation("Rule") == true && txtChkValidation("Duration") == true) {
+                var quest = {
+                    noofque: $("#number").val(),
+
+                    timeinminute: $("#Duration").val(),
+                    rules: $("#Rule").val(),
+                   
+                }; alert("click");
+                $.getJSON("/Exam/insertsetup", quest, function (data) {
+
+                    data = JSON.parse(data);
+                    if (data == 1) {
+                        alert("inserted");
+                        Reset();
+                     
+                    } else {
+                        alert("There some error.");
+                    }
+                });
+            } else {
+                alert("Please enter all text Box!.");
+                txtChkValidation('number');
+                txtChkValidation('Rule');
+             
+            }
+        });
+    });
+
+    function Reset() {
+        $("#number").val("");
+        $("#Duration").val("");
+        $("#Rule").val("");
+    }
+      
+
+  
+
+
+</script>
+
+
+

@@ -1,0 +1,172 @@
+USE [chikun]
+GO
+/****** Object:  StoredProcedure [dbo].[op_user]    Script Date: 03-12-2022 06:30:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[op_user]
+(
+@userid varchar(50)=null,
+@userpassword varchar(50)='',
+@username varchar(100)=null,
+@userphone varchar(50)=null,
+@useremail varchar(50)=null,
+@slno int=0,
+@optchoose varchar(50)=null,
+
+
+@usertechnology int=0,
+@usersubject int=0,
+@userstatus varchar(20)=null,
+
+@action varchar(30)
+)
+as
+begin
+if(@action='InsertUser')
+insert into tbl_UserMaster values(@userid,@userpassword,@username,@userphone,@useremail,'',@usertechnology,@usersubject,'pending')
+else if(@action='updatechange')
+begin
+        if @userpassword=''
+begin
+    update tbl_UserMaster set username=@username,userphone=@userphone,useremail=@useremail where userid=@userid 
+end
+else
+-- finally udate password here
+update tbl_UserMaster set userpassword=@userpassword where userid=@userid
+ 
+end
+else if(@action='login')
+select * from tbl_UserMaster where  userid=@userid and userpassword=@userpassword and userstatus='Active'
+else if(@action='getbyid')
+select * from tbl_UserMaster where  userid=@userid
+else if(@action='bindsetup')
+select * from tbl_SetupMaster
+else if(@action='insertResultdetails')
+begin
+	declare @ans varchar(100)
+	select @ans=ans from tbl_QuestionMaster where slno=@slno
+	if(@ans=@optchoose)
+	insert into tbl_ResultDetails values(@userid,getdate(),@slno,@optchoose,'True','pending')
+	else
+	insert into tbl_ResultDetails values(@userid,getdate(),@slno,@optchoose,'False','pending')
+
+end
+else if(@action='ViewResultbyId')
+select distinct um.username,tm.techname,sm.subname,s.noofque,(select count(rstatus) from tbl_ResultDetails where userid=@userid and rstatus='True') as Mark,
+(select count(*) from tbl_ResultDetails where userid=@userid) as Appeared
+from tbl_UserMaster um,tbl_TechnologyMaster tm,tbl_SubjectMaster sm,tbl_SetupMaster s,tbl_ResultDetails rd 
+where um.userid=rd.userid and um.usertechnology=tm.techid and um.usersubject=sm.subid and um.userid=@userid
+else if(@action='bindquestion')
+begin
+declare @val int
+select @val=noofque from tbl_SetupMaster
+select top (@val) * from tbl_QuestionMaster order by newid()
+end
+
+
+
+
+
+end
+////////////////////////////////
+USE [chikun]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_OnlineExamAdmin]    Script Date: 03-12-2022 06:31:31 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_OnlineExamAdmin]
+(
+@userid varchar(50)='',
+@userpassword varchar(50)='',
+@techid int =0,
+@techname varchar(50)='',
+@subid int =0,
+@subname varchar(50)='',
+@noofque int=0 ,
+@timeinminute int=0,
+@rules varchar(max)='',
+@slno int =0,
+@question varchar(max)='',
+@opt1 varchar(100)='',
+@opt2 varchar(100)='',
+@opt3 varchar(100)='',
+@opt4 varchar(100)='',
+@ans varchar(100)='',
+@mode varchar(50)
+)
+as
+begin
+if(@mode='adminlogin')
+select * from tbl_UserMaster where userid='Admin' and userpassword=@userpassword and userstatus='Active'
+else if(@mode='bindallusers')
+select u.userid,u.username,u.userphone,u.useremail,t.techname,s.subname,u.userstatus from 
+tbl_UserMaster u,tbl_TechnologyMaster t,tbl_SubjectMaster s where t.techid=u.usertechnology and s.subid=u.usersubject and u.userstatus='pending'
+and userid<>'Admin' order by userstatus desc
+else if(@mode='upduserstatus')
+update tbl_UserMaster set userstatus='Active' where userid=@userid
+else if(@mode='insuptech')
+begin
+if(@techid=0)
+insert into tbl_TechnologyMaster values(@techname)
+else
+update tbl_TechnologyMaster set techname=@techname where techid=@techid
+end
+else if(@mode='insupsub')
+begin
+if(@subid=0)
+insert into tbl_SubjectMaster values(@techid,@subname)
+else
+update tbl_SubjectMaster set techid=@techid,subname=@subname where subid=@subid
+end
+else if(@mode='deletetech')
+delete from tbl_TechnologyMaster where techid=@techid
+else if(@mode='deletesub')
+delete from tbl_SubjectMaster where subid=@subid
+else if(@mode='bindtech')
+select * from tbl_TechnologyMaster
+else if(@mode='bindtechbyid')
+select * from tbl_TechnologyMaster where techid=@techid
+else if(@mode='GetSubjectById')
+select * from tbl_SubjectMaster where subid=@subid
+else if(@mode='bindSub')
+select * from tbl_SubjectMaster where techid=@techid
+else if(@mode='insquemaster')
+begin
+	if(@slno='')
+		insert into  tbl_QuestionMaster values(@techid,@subid,@question,@opt1,@opt2,@opt3,@opt4,@ans)
+	else
+		update tbl_QuestionMaster set techid=@techid,subid=@subid,question=@question,opt1=@opt1,opt2=@opt2,opt3=@opt3,opt4=@opt4,ans=@ans where slno=@slno
+end
+else if(@mode='getQuestionbyid')
+Select * from tbl_QuestionMaster where slno=@slno 
+else if(@mode='getallquestion')
+
+Select q.slno,t.techname,s.subname,q.question,q.opt1,q.opt2,q.opt3,q.opt4,q.ans 
+from tbl_QuestionMaster q,tbl_SubjectMaster s,tbl_TechnologyMaster t
+where q.techid=t.techid and q.subid=s.subid
+
+else if(@mode='deletequestion')
+
+Delete from tbl_QuestionMaster where slno=@slno
+else if(@mode='fillsubtable')
+Select s.subid,t.techname,s.subname from tbl_SubjectMaster s,tbl_TechnologyMaster t where s.techid=t.techid
+else if(@mode='ViewAllResult')
+	select distinct um.userid, um.username,tm.techname,sm.subname,rd.doe,
+	(select count(rstatus) from  tbl_ResultDetails  where rstatus='true' group by userid) as mark
+	from tbl_UserMaster um,tbl_TechnologyMaster tm,tbl_SubjectMaster sm,tbl_ResultDetails rd 
+	where um.userid=rd.userid and um.usertechnology=tm.techid and um.usersubject=sm.subid and rd.dstatus='pending'
+	
+
+	
+else if(@mode='approvecertificate')
+Update tbl_ResultDetails set dstatus='Active' where userid=@userid
+
+end
+
+
+
+

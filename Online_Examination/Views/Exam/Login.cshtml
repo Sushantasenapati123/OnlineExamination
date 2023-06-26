@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    //Layout = "_LayoutTest";
+}
+
+
+@*<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css">
+</head>
+<body>
+    <form onsubmit="return false">
+        <div class="form-item">
+            <label>Username</label>
+            <div class="input-wrapper">
+                <input type="text" id="username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" />
+            </div>
+        </div>
+        <div class="form-item">
+            <label>Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" />
+                <button type="button" id="eyeball">
+                    <div class="eye"></div>
+                </button>
+                <div id="beam"></div>
+            </div>
+        </div>
+        <button id="submit">Sign in</button>
+    </form>
+    <script src="~/js/JavaScript.js"></script>
+</body>
+</html>*@
+
+<h1>Login</h1>
+    <table class="table  table-striped">
+        <tr>
+            <th colspan="2" align="justify">Login Form</th>
+        </tr>
+        <tr>
+            <th align="right">User ID</th>
+            <td>
+                <input id="txtUserID" type="text" class="form-control" placeholder="Enter User ID" required onkeypress="txtChkValidation('txtUserID')"/>
+            </td>
+
+        </tr>
+        <tr>
+            <th align="right">Password</th>
+            <td>
+                <input id="txtPasword" type="password" class="form-control" placeholder="Enter Password" required onkeypress="txtChkValidation('txtPasword')"/>
+            </td>
+
+        </tr>
+        <tr>
+            <td align="right">
+                <input type="button" id="btnLogin" value="Login" />
+            </td>
+            <td  align="right">
+                <input type="button" id="regis" value="Registration" />
+            </td>
+        </tr>
+    </table>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/Validation/Validation.js"></script>
+<script src="~/js/JavaScript.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnLogin").click(function () {
+            alert("click")
+            if (txtChkValidation('txtUserID') == true && txtChkValidation('txtPasword') == true) {
+                var login = {
+                    userid: $("#txtUserID").val(),
+                    userpassword: $("#txtPasword").val(),
+                };
+                $.getJSON("/Exam/UserLogin", login, function (data) {
+
+                    //data = JSON.parse(data);
+                    if (data == 2) {
+                        alert("Admin Success");
+                        window.location.href = '/Exam/Adminwl/';
+                    } else if (data == 3) {
+                        alert("User Success");
+                        window.location.href = '/Exam/Userwl/';
+                        //alert(data);
+
+                    }
+                    else if (data == 0) {
+                        alert("Check your User ID and Password");
+                        $("#txtUserID").val() = "";
+                        $("#txtPasword").val() = "";
+
+                    }
+
+                });
+            } else {
+                txtChkValidation('txtUserID');
+                txtChkValidation('txtPasword')
+            }
+        });
+    });
+    $(document).ready(function () {
+        $("#regis").click(function () {
+            alert("Regis");
+
+            window.location.href = '/Exam/Regis/';
+        });
+    });
+
+
+</script>

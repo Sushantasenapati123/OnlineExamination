@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "Usviewuser";
+}
+
+<h1>Usviewuser</h1>
+<table class="table" id="table_user">
+    <thead>
+        <tr>
+            <th>
+                User ID
+            </th>
+            <th>
+                User Name
+            </th>
+            <th>
+                Phone number
+            </th>
+            <th>
+                Email Address
+            </th>
+            <th>
+                Technology
+            </th>
+            <th>
+                Subject
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Approve/Pending
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+    $(window).on("load", function () {
+
+        GetAllUser();
+      
+
+    });
+
+    function GetAllUser() {
+        $("#table_user tbody tr").remove();
+      
+
+        $.getJSON("/Exam/GetAllUser", function (data) {
+           
+            data = JSON.parse(data);
+            $.each(data, function (i, usr) {
+                $("#table_user tbody").append(
+                    `<tr><td>` + usr.userid + `</td><td>` + usr.username + `</td><td>` + usr.userphone + `</td><td>` + usr.useremail + `</td><td>` + usr.techname + `</td><td>` + usr.subname + `</td><td>` + usr.userstatus + `</td><td><button class="btn btn-primary" onclick="shy(` + usr.userid + `)">Approve</button></td></tr>`
+                );
+            });
+        });
+    }
+
+
+    ///////////////
+
+       
+    function shy(userid) {
+        alert("approve");
+        $.get("/Exam/updatestatus", { userid: userid }, function (data) {      //passing the id of the selected user to the action method for deletion
+            if (data != null) {
+                //location.reload();///to refresh page
+                alert("product Deleted");
+            }
+            else {
+                alert("Error");
+            }
+        });
+        }
+ 
+    ///////////////
+
+  
+    //$(document).ready(function () {
+
+    //    function Approve() {
+    //        $("#btnApprove").click(function () {
+    //            alert("btnApprove");
+    //            var login = {
+    //                userid: $("#userid").val(),
+
+
+    //            };
+    //            alert("btnApprove_obj_create");
+
+    //            $.getJSON("/Exam/updatestatus", login, function (data) {
+
+    //                data = JSON.parse(data);
+    //                if (data == 1) {
+    //                    alert("status updated");
+    //                    Reset();
+    //                } else {
+    //                    alert("some error");
+    //                }
+    //            });
+
+    //        });
+    //    }});
+
+</script>
+

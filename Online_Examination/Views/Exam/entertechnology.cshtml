@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewData["Title"] = "entertechnology";
+    Layout = "admin";
+}
+
+<h1>entertechnology</h1>
+
+<table id="tbl" class="table table-bordered">
+    <tr>
+        <td align="justify">
+            <label for="techid" id="techid"></label>
+
+        </td>
+        <td>
+            <table class="table  table-bordered table-striped">
+                <tr>
+                   
+                    <th colspan="2" align="justify">
+                        Enter Technology
+                    </th>
+                </tr>
+                <tr>
+                    <th align="right">Enter Technology</th>
+                    <td>
+                        <input id="txtUserID" type="text" class="form-control" placeholder="Enter User ID" onkeypress="txtChkValidation('txtUserID')" />
+                    </td>
+
+                </tr>
+
+
+
+                <tr>
+                    <td colspan="2" align="right">
+                        <input type="button" id="btn_reg" value="saveupdate" />
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+<table class="table" id="table_user">
+    <thead>
+        <tr>
+            <th>
+               ID
+            </th>
+            <th>
+              Tech Name
+            </th>
+           
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    $(window).on("load", function () {
+
+        gettechnology();
+
+
+    });
+    function gettechnology() {
+        $("#table_user tbody tr").remove();
+
+
+        $.getJSON("/Exam/GetAllTech", function (data) {
+
+            data = JSON.parse(data);
+            $.each(data, function (i, usr) {
+                $("#table_user tbody").append(
+                    `<tr><td>` + usr.techid + `</td><td>` + usr.techname + `</td><td><button class="btn btn-primary" onclick="Edit(` + usr.techid + `)">Edit</button><button class="btn btn-primary" onclick="Delete(` + usr.techid + `)">Delete</button></td></tr>`
+                );
+            });
+        });
+    }
+    function Delete(techid) {
+        $.post("/Exam/Delete", { vid: techid }, function (data) {      //passing the id of the selected user to the action method for deletion
+            if (data != null) {
+                location.reload();///to refresh page
+                alert("product Deleted");
+            }
+            else {
+                alert("Error");
+            }
+        });
+    }
+
+    function Edit(techid) {
+        alert("Edit");
+
+        $.get("/Exam/bindtechbyid", { pid: techid }, function (data) {
+
+            prod = JSON.parse(data);
+            
+
+            $("#txtUserID").val(prod.techname),
+            $("#techid").val(prod.techid);
+
+
+           
+          
+           
+           
+        });
+    }
+
+
+  
+    $(document).ready(function () {
+       
+
+        $("#btn_reg").click(function () {
+          
+            alert("click");
+            var login = {
+                techname: $("#txtUserID").val(),
+                techid: $("#techid").val(),
+            };
+
+            $.getJSON("/Exam/entertechnologyy", login, function (data) {
+
+                data = JSON.parse(data);
+                if (data == 1) {
+                    alert("insert successfull");
+                    gettechnology();
+                    Reset();
+                } else {
+                    alert("failed");
+                }
+            });
+
+        });
+    });
+</script>
+

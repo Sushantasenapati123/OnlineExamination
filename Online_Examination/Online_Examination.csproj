@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\js\Resource.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\style.css.map" />
+    <None Include="wwwroot\css\style.scss" />
+    <None Include="wwwroot\js\accountopeningvalidation.js" />
+    <None Include="wwwroot\js\AdminConsole\DesignationMaster.js" />
+    <None Include="wwwroot\js\AdminConsole\file-upload.js" />
+    <None Include="wwwroot\js\AdminConsole\HierarchyMaster.js" />
+    <None Include="wwwroot\js\AdminConsole\jquery.colorpicker" />
+    <None Include="wwwroot\js\AdminConsole\off-canvas.js" />
+    <None Include="wwwroot\js\AdminConsole\select2.js" />
+    <None Include="wwwroot\js\AdminConsole\settings.js" />
+    <None Include="wwwroot\js\bootbox.js" />
+    <None Include="wwwroot\js\bootstrap-datepicker.min.js" />
+    <None Include="wwwroot\js\bootstrap.min.js" />
+    <None Include="wwwroot\js\chartist-plugin-fill-donut.min.js" />
+    <None Include="wwwroot\js\chartist-plugin-tooltip.js" />
+    <None Include="wwwroot\js\chartist.min.js" />
+    <None Include="wwwroot\js\chartjs\chart.js" />
+    <None Include="wwwroot\js\chartjs\codeEditor.js" />
+    <None Include="wwwroot\js\chartjs\codemirror.js" />
+    <None Include="wwwroot\js\chartjs\dashboard.js" />
+    <None Include="wwwroot\js\chartjs\file-upload.js" />
+    <None Include="wwwroot\js\chartjs\hoverable-collapse.js" />
+    <None Include="wwwroot\js\chartjs\misc.js" />
+    <None Include="wwwroot\js\chartjs\off-canvas.js" />
+    <None Include="wwwroot\js\chartjs\select2.js" />
+    <None Include="wwwroot\js\chartjs\settings.js" />
+    <None Include="wwwroot\js\chartjs\tabs.js" />
+    <None Include="wwwroot\js\chartjs\typeahead.js" />
+    <None Include="wwwroot\js\custom.js" />
+    <None Include="wwwroot\js\custom2.js" />
+    <None Include="wwwroot\js\dashboard.js" />
+    <None Include="wwwroot\js\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\js\JavaScript.js" />
+    <None Include="wwwroot\js\jquery-3.3.1.min.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.min.js" />
+    <None Include="wwwroot\js\jquery.dataTables.min.js" />
+    <None Include="wwwroot\js\popper.min.js" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\slimscrollbar.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+</Project>
